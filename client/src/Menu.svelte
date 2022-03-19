@@ -1,12 +1,13 @@
 <script>
 
     import { onMount } from "svelte";
-    import { token } from "./state";
+    import Authentication from './shared/stores/authentication';
 
     export let menu;
     export let title;
  
     onMount(() => {
+
         const btn = document.querySelector("button.mobile-menu-button");
         const menu = document.querySelector(".mobile-menu");
         /**
@@ -17,11 +18,15 @@
         btn.addEventListener("click", () => {
             menu.classList.toggle("hidden");
         });
+
     });
 
     function logout() {
-        token.set("");
+
+        Authentication.logout();
+
     }
+
 </script>
 
 <nav class="bg-white shadow-lg">
@@ -49,7 +54,7 @@
                             </li>
                         {/each}
 
-                        {#if $token != ""}
+                        {#if $Authentication.token}
                             <li>
                                 <a
                                     href="/"
@@ -94,7 +99,7 @@
                     >
                 </li>
             {/each}
-            {#if $token != ""}
+            {#if $Authentication.token != ""}
                 <li class="active">
                     <a
                         href="/"

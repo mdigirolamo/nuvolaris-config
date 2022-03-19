@@ -1,9 +1,12 @@
 <script>
 
   import validate, { async } from "validate.js";
+
   import { onMount } from "svelte";
+
   import { get, put } from "../util";
-  import { loggedEmail, loggedRole } from "../state";
+  import Authentication from '../shared/stores/authentication';
+  import UserRole from '../shared/enums/user-roles'
 
   let errors = {};
   let form = {};
@@ -14,15 +17,15 @@
 
   async function load() {
 
-    if ($loggedRole == "Administrator") {
+    if ($loggedRole == UserRole.ADMINISTRATOR) {
 
       users = await get("/users");
 
     } else {
 
-      data.email = $loggedEmail;
-      data = await get("/user/" + $loggedEmail);
-      console.log("data", $loggedEmail);
+      data.email = $Authentication.email;
+      data = await get("/user/" + $Authentication.email);
+      console.log("data", $Authentication.email);
 
     }
 
@@ -115,7 +118,7 @@
 
 <!-- svelte-ignore empty-block -->
 <form id="main">
-  {#if ($loggedRole == "Administrator") && (upuser=="")}
+  {#if ($Authentication.role == "Administrator") && (upuser=="")}
     {#await load()}
       <p>Caricamento...</p>
     {:then}

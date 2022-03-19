@@ -9,7 +9,7 @@
 </script>
 
 <div class="flex flex-col md:flex-row">
-    <div class="main-content flex-1 bg-gray-100 md:mt-2 pb-24 md:pb-5">
+    <div class="main-content flex-1 md:mt-2 pb-24 md:pb-5">
         <Menu {menu} {title}/>
         {#if !hideTitle}
         <div class="bg-gray-800 pt-3">
