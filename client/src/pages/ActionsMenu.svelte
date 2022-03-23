@@ -5,12 +5,36 @@
 
 </script>
 
-{#if $Authentication.role == UserRole.ADMINISTRATOR}
-    <a class="inline-block w-full px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out" href="/app/user">Add user</a><br />
-    <a class="inline-block w-full px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out" href="/app/userdelete">Delete user and <br/>associated namespaces</a>
-{/if}
+<h1 class="py-2 text-lg font-semibold border-b border-slate-200">Please choose an action.</h1>
 
-<a class="inline-block w-full px-6 py-2.5 bg-yellow-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-yellow-600 hover:shadow-lg focus:bg-yellow-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-yellow-700 active:shadow-lg transition duration-150 ease-in-out" href="/app/userupdate">Update user</a>
-<a class="inline-block w-full px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out" href="/app/namespace">Add namespace</a>
-<a class="inline-block w-full px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out" href="/app/namespacedelete">Delete namespace</a>
+<h2 class="py-2 text-slate-500 italic">User management.</h2>
+
+<nav>
+    <ul class="flex flex-col mt-4 drop-shadow-sm border border-slate-300 rounded-md overflow-hidden divide-y divide-slate-300 font-normal text-slate-600">
+        {#if $Authentication.role == UserRole.ADMINISTRATOR}
+            <li class="first:rounded-t-md">
+                <a class="block bg-green-100 hover:bg-green-200 w-full p-4" href="/app/user">Add user</a>
+            </li>
+            <li>
+                <a class="block bg-red-100 hover:bg-red-200 w-full p-4" href="/app/userdelete">Delete user and associated namespaces</a>
+            </li>
+        {/if}
+        <li class="last:rounded-b-md only:rounded-md">
+            <a class="block bg-orange-100 hover:bg-orange-200 w-full p-4" href="/app/userupdate">Update user</a>
+        </li>
+    </ul>
+
+        <h2 class="py-4 border-slate-100 text-slate-500 italic">Namespace management.</h2>
+        
+    <ul class="flex flex-col mt-2 drop-shadow-sm border border-slate-300 rounded-md overflow-hidden divide-y divide-slate-300 font-normal text-slate-600">
+        <li class="rounded-t-md">
+            <a class="block bg-green-100 hover:bg-green-200 w-full p-4" href="/app/namespace">Add namespace</a>
+        </li>
+        <li class="rounded-b-md">
+            <a class="block bg-red-100 hover:bg-red-200 w-full p-4" href="/app/namespacedelete">Delete namespace</a>
+        </li>
+    </ul>
+</nav>
+
+
 

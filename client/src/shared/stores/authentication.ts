@@ -2,6 +2,7 @@ import { writable } from 'svelte/store';
 
 import type User from '../interfaces/user';
 import type UserCredentials from '../interfaces/user-credentials';
+import type ApiResponse from '../interfaces/api-response';
 
 import APIStatusCode from '../enums/api-status-code';
 
@@ -13,11 +14,12 @@ const initialValue: User = {
     id: '',
     token: '',
     role: '',
-    email: ''
+    email: '',
 };
 
-const { subscribe, set } = writable<User>(initialValue);
+const sessionValue = <User>JSON.parse(localStorage.getItem('auth'));
 
+const { subscribe, set } = writable<User>(sessionValue || initialValue);
 interface Authentication {
     subscribe: typeof subscribe,
     login: typeof login,
@@ -31,26 +33,32 @@ interface Authentication {
  */
 async function login(credentials: UserCredentials): Promise<APIStatusCode> {
 
-    let user;
+    /* let response: User & ApiResponse; */
+
+    let response;
 
     return new Promise<APIStatusCode>(async (resolve) => {
 
         try {
 
-            user = await post('/login', credentials) as User | APIStatusCode;
+            response = await post('/login', credentials);
 
-            if (user?.error) {
+            if (response?.error) {
 
                 resolve(APIStatusCode.USER_NOT_FOUND);
     
             } else {
 
-                set({
-                    id: user.loggedId,
-                    token: user.token,
-                    role: user.loggedRole,
-                    email: user.loggedEmail
-                });
+                const user: User = {
+                    id: response.loggedId,
+                    token: response.token,
+                    role: response.loggedRole,
+                    email: response.loggedEmail
+                };
+
+                set(user);
+
+                localStorage.setItem('auth', JSON.stringify(user));
 
                 resolve(APIStatusCode.OK);
 
@@ -69,6 +77,8 @@ async function login(credentials: UserCredentials): Promise<APIStatusCode> {
 function logout() {
 
     set(initialValue);
+    
+    localStorage.removeItem('auth');
 
 }
 

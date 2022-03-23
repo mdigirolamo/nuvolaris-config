@@ -17,7 +17,7 @@
 
   async function load() {
 
-    if ($loggedRole == UserRole.ADMINISTRATOR) {
+    if ($Authentication.loggedRole == UserRole.ADMINISTRATOR) {
 
       users = await get("/users");
 

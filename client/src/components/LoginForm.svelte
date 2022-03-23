@@ -26,8 +26,6 @@
 
     const { form,
             errors,
-            handleChange,
-            handleSubmit,
             isValid } = createForm<yup.InferType<typeof validationSchema>>(
                 { extend: validator({ schema: validationSchema }),
                   onSubmit(values, context) {
@@ -50,15 +48,13 @@
 
 <h1 class="py-2 text-lg font-semibold border-b border-slate-200">Welcome to Configurator: sign in.</h1>
 
-<form use:form class="flex flex-col" on:submit={handleSubmit} novalidate>
+<form use:form class="flex flex-col" novalidate>
     
     <label class="py-2" for="email">Email</label>
 
-    <input on:change={handleChange}
-        class="rounded py-2"
-        type="email"
-        name="email"
-        placeholder="Enter your email address"
+    <input class="rounded py-2"
+           type="email"
+           name="email"
     >
 
     {#if $errors.email}
@@ -67,11 +63,9 @@
 
     <label class="py-2" for="password">Password</label>
 
-    <input on:change={handleChange}
-        class="rounded"
-        type="password"
-        name="password"
-        placeholder="Enter your password"
+    <input class="rounded"
+           type="password"
+           name="password"
     >
 
     {#if $errors.password}
@@ -81,6 +75,7 @@
     {#if statusCode == APIStatusCode.USER_NOT_FOUND}
         <small class="py-2 text-red-600">Your credentials appear to be wrong; please try again.</small>
     {/if}
+
     {#if statusCode == APIStatusCode.GENERIC_ERROR}
         <small class="py-2 text-red-600">The server is temporarily unavailable.</small>
     {/if}
@@ -89,7 +84,7 @@
         type="submit"
         disabled="{!$isValid || isBusy}"
         class="my-2 text-white drop-shadow-sm py-2 bg-blue-500 hover:bg-blue-600
-            disabled:bg-slate-100 rounded">
+            disabled:bg-slate-100 disabled:text-slate-400 rounded">
         {#if isBusy}Logging in...{:else}LOGIN{/if}
     </button>   
 

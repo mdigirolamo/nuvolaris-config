@@ -24,10 +24,10 @@ module.exports = function(app, db) {
     // Create a new user
     
     app.post("/api/user", async(req, res) => {
-        console.log("post /api/user ", req.body)
-        let ctrl = await db.collection("user").find({ "email": req.body.email })
-        //console.log("answer user",ctrl)
-        if (ctrl.data != null) {
+        
+        let ctrl = await db.collection("user").findOne({ "email": req.body.email })
+
+        if (ctrl != null) {
             res.send({ error: "Email must be unique" })
         }
         else {
@@ -36,8 +36,7 @@ module.exports = function(app, db) {
             res.send(out)
         }
         
-       
-    })
+    });
 
     // Update a user
     app.put("/api/user/:email", async(req, res)  => {

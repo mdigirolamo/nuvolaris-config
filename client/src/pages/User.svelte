@@ -1,230 +1,68 @@
-<script>
-  import validate from "validate.js";
+<script lang='ts'>
+
   import { onMount } from "svelte";
-  import { post, get, put } from "../util";
-  
+  import { slide } from 'svelte/transition';
 
-  let roles = ["Administrator", "User"];
-  let errors = {};
-  let form = {};
-  let message = "";
-  let data = {};
-  function init(){
-    data= {
-    role: "User",
-    name: "",
-    surname: "",
-    address: "",
-    phone: "",
-    email: "",
-    password: "",
-    namespace: "",
-  };
-  form = document.querySelector("form#main");
-  }
-  onMount(init);
+  import { post } from "../util";
+  import APIStatusCode from '../shared/enums/api-status-code';
+  import UserProfileForm from "../shared/components/UserProfileForm.svelte";
 
-  function error(map, name) {
-    if (!map) return "";
-    if (name in map) {
-      //document.getElementById(name).classList.add("text-red")
-      let label = document.querySelector("label[for='" + name + "']");
-      if (label) label.classList.add("text-red-500");
+  let response;
+  let apiStatusCode = null;
 
-      return map[name].join("<br>");
-    } else {
-      let label = document.querySelector("label[for='" + name + "']");
-      if (label) label.classList.remove("text-red-500");
-      //document.getElementById(name).classList.remove("text-red")
-    }
-    return "";
-  }
-  var constraints = {
-    email: {
-      // Email is required
-      presence: true,
-      // and must be an email (duh)
-      email: true,
-    },
-    password: {
-      // Password is also required
-      presence: true,
-      // And must be at least 5 characters long
-      length: {
-        minimum: 5,
-      },
-    },
-    namespace: {
-      presence: true,
-    },
+  /**
+   * TO DO: in case of error (e.g.: user already exists) server APIs should send
+   * an appropriate HTTP code (e.g.: 409) in order to allow the client-side
+   * application to handle them in a standard way
+   */
+  async function onSubmit(formData){
+    
+    try {
 
-    "Confirm-password": {
-      // You need to confirm your password
-      presence: true,
-      // and it needs to be equal to the other password
-      equality: {
-        attribute: "password",
-        message: "Password are not the same",
-      },
-    },
-  };
-  async function save(event) {
-    errors = validate(form, constraints);
+      response = await post('/user', formData.detail);
 
-    if (!errors) {
-      //console.log(data);
-      event.preventDefault();
-      let res = await post("/user", data);
-      if ("error" in res) message = res.error;
-      else {
-        init();
+      if (response?.error) {
+
+        apiStatusCode = APIStatusCode.USER_ALREADY_EXISTS;
+
+      } else {
+
+        apiStatusCode = APIStatusCode.OK;
+
       }
-      console.log(res);
-    } else {
-      console.log("errors", errors);
+
+    } catch (error) {
+
+      apiStatusCode = APIStatusCode.GENERIC_ERROR;
+
     }
+
   }
+
 </script>
 
-<h1>Add user</h1>
-<form id="main">
-  <table class="table-fixed">
-    <tr>
-      <th colspan="2">
-        <label for="inputRole" class="small mb-1">Role</label>
+<section class="p-8 max-w-lg mx-auto">
 
-        <legend class="sr-only"> Role </legend><br />
-        <select
-          bind:value={data.role}
-          class="select select-bordered select-accent w-full max-w-xs "
-          name="role"
-          id="role"
-        >
-          {#each roles as roleins}
-            <option value={roleins}>
-              {roleins}
-            </option>
-          {/each}
-        </select>
-      </th>
-    </tr>
-    <tr>
-      <th colspan="2">
-        <label for="exampleEmail" class="small mb-1">Email*</label>
-        <input
-          bind:value={data.email}
-          class="input input-accent input-bordered w-full max-w-xs "
-          type="email"
-          name="email"
-          id="email"
-          placeholder="Insert email"
-        />
-        <div class="col-sm-5 messages">{error(errors, "email")}</div>
-      </th>
-    </tr>
-    <tr>
-      <th>
-        <label for="inputPassword" class="small mb-1">Password*</label>
-        <input
-          bind:value={data.password}
-          class="input input-accent input-bordered w-full max-w-xs "
-          type="password"
-          name="password"
-          id="password"
-          placeholder="Inserisci password"
-        />
-        <div class="col-sm-5 messages">{error(errors, "password")}</div>
-      </th>
-      <th>
-        <label for="inputConfirmPassword" class="small mb-1">
-          Confirm Password*
-        </label>
-        <input
-          class="input input-accent input-bordered w-full max-w-xs "
-          type="password"
-          name="Confirm-password"
-          id="Confirm-password"
-          placeholder="Confirm password"
-        />
-        <div class="col-sm-5 messages">
-          {error(errors, "Confirm-password")}
-        </div>
-      </th>
-    </tr>
-    <tr>
-      <th colspan="2">
-        <label for="namespace" class="small mb-1">Namespace*</label>
-        <input
-          bind:value={data.namespace}
-          class="input input-accent input-bordered w-full max-w-xs "
-          type="text"
-          name="namespace"
-          id="namespace"
-          placeholder="Insert namespace"
-        />
-        <div class="col-sm-5 messages">{error(errors, "namespace")}</div>
-      </th>
-    </tr>
-    <tr>
-      <th>
-        <label for="inputFirstName" class="small mb-1">Name</label>
-        <input
-          bind:value={data.name}
-          class="input input-accent input-bordered w-full max-w-xs "
-          type="text"
-          name="name"
-          id="name"
-          placeholder="Insert name"
-        />
-      </th>
-      <th>
-        <label for="inputLastName" class="small mb-1">Surname</label>
-        <input
-          bind:value={data.surname}
-          class="input input-accent input-bordered w-full max-w-xs "
-          type="text"
-          name="surname"
-          id="surname"
-          placeholder="Insert surname"
-        />
-      </th>
-    </tr>
-    <tr>
-      <th>
-        <label for="inputAddress" class="small mb-1">Address</label>
-        <input
-          bind:value={data.address}
-          class="input input-accent input-bordered w-full max-w-xs "
-          type="text"
-          name="address"
-          id="address"
-          placeholder="Insert address"
-        />
-      </th>
-      <th>
-        <label for="inputPhone" class="small mb-1">Phone</label>
-        <input
-          bind:value={data.phone}
-          class="input input-accent input-bordered w-full max-w-xs "
-          type="text"
-          name="phone"
-          id="phone"
-          placeholder="Phone number"
-        />
-      </th>
-    </tr>
-  </table>
-  *Are necessary<br />
-  <!-- svelte-ignore a11y-label-has-associated-control -->
-  <label class="label">
-    <span class="label-text text-red-600">{message}</span>
-  </label>
+  <h1 class="py-2 text-slate-500 italic border-b border-slate-200">User management.</h1>
 
-  <button
-  class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-    on:click|preventDefault={save}
-    href="pages/authentication/login"
-  >
-    Create Account
-  </button>
-</form>
+  <h2 class="py-2 text-lg font-semibold">Add a user.</h2>
+
+  {#if apiStatusCode === APIStatusCode.OK}
+    <p class="py-2 text-green-600" transition:slide="{{ duration: 250 }}">User has been successfully saved.</p>
+  {/if}
+
+  {#if apiStatusCode === APIStatusCode.USER_ALREADY_EXISTS}
+    <p class="py-2 text-red-600" transition:slide="{{ duration: 250 }}">Can't create user: an account with same email already exists.</p>
+  {/if}
+
+  {#if apiStatusCode === APIStatusCode.GENERIC_ERROR}
+    <p class="py-2 text-red-600" transition:slide="{{ duration: 250 }}">The server is temporarily unavailable.</p>
+  {/if}
+
+  <UserProfileForm on:form-data="{onSubmit}">
+    <svelte:fragment slot="button-label">
+      CREATE USER
+    </svelte:fragment>
+  </UserProfileForm>
+
+</section>
