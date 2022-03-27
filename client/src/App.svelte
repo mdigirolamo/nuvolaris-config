@@ -18,7 +18,11 @@
  *
 -->
 <script lang="ts">
-	import Router from "./Router.svelte";	
+	import smoothscroll from 'smoothscroll-polyfill';
+
+	import Router from "./Router.svelte";
+
+	smoothscroll.polyfill();
  </script>
 
  <Router />

@@ -1,7 +1,8 @@
 enum APIStatusCode {
     OK,
     GENERIC_ERROR,
-    USER_NOT_FOUND,
+    NOT_FOUND,
+    ALREADY_EXISTS
 }
 
 export default APIStatusCode

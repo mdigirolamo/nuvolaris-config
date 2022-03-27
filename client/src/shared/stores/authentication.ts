@@ -35,7 +35,7 @@ async function login(credentials: UserCredentials): Promise<APIStatusCode> {
 
     /* let response: User & ApiResponse; */
 
-    let response;
+    let response: ApiResponse<User>;
 
     return new Promise<APIStatusCode>(async (resolve) => {
 
@@ -45,15 +45,15 @@ async function login(credentials: UserCredentials): Promise<APIStatusCode> {
 
             if (response?.error) {
 
-                resolve(APIStatusCode.USER_NOT_FOUND);
+                resolve(APIStatusCode.NOT_FOUND);
     
             } else {
 
                 const user: User = {
-                    id: response.loggedId,
-                    token: response.token,
-                    role: response.loggedRole,
-                    email: response.loggedEmail
+                    id: response.data.id,
+                    token: response.data.token,
+                    role: response.data.role,
+                    email: response.data.email
                 };
 
                 set(user);

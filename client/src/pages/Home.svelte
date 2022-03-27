@@ -1,8 +1,7 @@
 <script>
     
     import ActionsMenu from "./ActionsMenu.svelte"
-    import LoginForm from '../components/LoginForm.svelte';
-    import Namespace from './Namespace.svelte';
+    import LoginForm from '../shared/components/LoginForm.svelte';
 
     import Authentication from '../shared/stores/authentication';
 

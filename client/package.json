@@ -44,6 +44,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.1",
     "sirv-cli": "^1.0.0",
+    "smoothscroll-polyfill": "^0.4.4",
     "svelte-redux-connect": "^1.2.1",
     "validate.js": "^0.13.1",
     "yup": "^0.32.11"
