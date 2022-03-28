@@ -76,12 +76,32 @@ module.exports = function(app, db) {
     });
 
     // Update a user
+    // NOTE: user's email address is already contained in the request body
     app.put('/api/user/:email', async(req, res)  => {
 
         let dt = req.body;
         delete dt._id;
 
-        const out = await db.collection('user').replaceOne({'email': req.params.email}, dt);
+        /**
+         * NOTE: resources should be identified by their unique ID; employing email as
+         * identifier as in this case could lead to possible inconsitencies, e.g.:
+         * 1) the frontend app requests an update for user john.doe@example.com, 
+         *    modifying his email address with j.doe@example.com;
+         * 2) the operation succeeds, but the frontend app still retains the original
+         *    email address;
+         * 3) the frontend app requests another update, but no user john.doe@example.com
+         *    is found
+         * Same considerations for the remaining endpoints.
+         */
+        const out = await db.collection('user').replaceOne({'email': req.params.email}, {
+            'role': req.body.role,
+            'name': req.body.name,
+            'surname': req.body.surname,
+            'address': req.body.address,
+            'phone': req.body.phone,
+            'email': req.body.email,
+            'password': req.body.password
+        });
 
         res.send(out);
 
@@ -92,7 +112,7 @@ module.exports = function(app, db) {
 
         let data = req.body
         let outus = await db.collection('user').deleteOne( { 'email': req.body.email } )
-        let outns = await db.collection('namespace').deleteMany({'email':req.body.email})
+        let outns = await db.collection('namespace').deleteMany({'email': req.body.email})
        
         res.send(outns);
         

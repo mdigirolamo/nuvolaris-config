@@ -34,7 +34,6 @@ app.use(express.json());
 app.use(express.static(rootDir));
 
 app.get('/app/*', (req, res) => {
-    console.log('ciaone');
     const file = `${rootDir}/index.html`;
     console.log(file);
     res.sendFile(file);
