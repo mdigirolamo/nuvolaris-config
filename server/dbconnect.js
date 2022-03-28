@@ -1,25 +1,31 @@
-const mongo = require("mongodb");
-const mongoUrl = "mongodb://localhost"
+const mongo = require('mongodb');
+const mongoUrl = 'mongodb://localhost'
 
-let db = undefined
+let db;
 
 async function init() {
     const client = new mongo.MongoClient(mongoUrl)
     return client.connect()
-}
+} 
 
 if (process.argv.length < 3) {
-    let repl = require("repl").start();
+
+    let repl = require('repl').start();
+
     init().then(client => {
-        db = client.db("data")
-        repl.context["client"] = client
-        repl.context["db"] = db
-    })
+        db = client.db('data') 
+        repl.context['client'] = client 
+        repl.context['db'] = db  
+    });
+
 } else {
-    let setup = require(process.argv[2])
+
+    const setup = require(process.argv[2]);
+
     init().then(async (client) => {
-        db = client.db("data")
+        db = client.db('data') 
         await setup(db)
         return client  
-    }).then(client => client.close())
+    }).then(client => client.close());
+    
 }

@@ -1,9 +1,11 @@
 <script>
 
     import validate from "validate.js";
+
     import { onMount } from "svelte";
+
     import { del } from "../util";
-    import { loggedRole,loggedEmail } from "../state";
+    import Authentication from '../shared/stores/authentication';
 
     let data = { email: "", namespace: "" };
     let message = "";
@@ -50,8 +52,8 @@
         if (!errors) {
             //console.log(data);
             event.preventDefault();
-            data.email=$loggedEmail;
-            let res = await del("/namespace/"+$loggedRole, data);
+            data.email = $Authentication.role;
+            let res = await del("/namespace/" + $Authentication.role, data);
             if ("error" in res) message = res.error;
             else {
                 data.namespace = "";

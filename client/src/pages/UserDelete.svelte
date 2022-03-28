@@ -80,7 +80,7 @@
             name="email"
             id="email"
         >
-            {#each users as usr}
+            {#each users.data as usr}
                 <option value={usr.email}>
                     {usr.email}
                 </option>
